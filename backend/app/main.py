@@ -3,7 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from app.api.health import router as health_router
+from app.api.routes.auth import router as auth_router
+from app.api.routes.history import router as history_router
 from app.api.routes.investigate import router as investigate_router
+from app.api.routes.progress import router as progress_router
 
 load_dotenv()
 
@@ -18,4 +21,7 @@ app.add_middleware(
 )
 
 app.include_router(health_router)
+app.include_router(auth_router)
+app.include_router(history_router)
+app.include_router(progress_router)
 app.include_router(investigate_router)

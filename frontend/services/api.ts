@@ -1,10 +1,20 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000',
-});
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+
+export function getApiClient(token?: string): AxiosInstance {
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return axios.create({
+    baseURL: BASE_URL,
+    headers,
+  });
+}
 
 export async function getHealthStatus() {
-  const response = await api.get('/health');
+  const response = await getApiClient().get('/health');
   return response.data;
 }
