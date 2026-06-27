@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <style>
+    .bg { fill: #0b1220; }
+    .panel { fill: #111827; stroke: #1f2937; stroke-width: 3; rx: 20; }
+    .header { fill: #e2e8f0; font-family: Inter, Arial, sans-serif; font-size: 26px; font-weight: 700; }
+    .sub { fill: #94a3b8; font-family: Inter, Arial, sans-serif; font-size: 16px; }
+    .button { fill: #0ea5e9; rx: 14; }
+    .textbox { fill: #0f172a; stroke: #334155; stroke-width: 2; rx: 14; }
+    .text { fill: #cbd5e1; font-family: Inter, Arial, sans-serif; font-size: 14px; }
+  </style>
+  <rect class="bg" width="960" height="540" />
+  <rect class="panel" x="40" y="40" width="880" height="460" rx="28" />
+  <text x="80" y="96" class="header">AI Kubernetes Troubleshooting Dashboard</text>
+  <text x="80" y="126" class="sub">Context selection, evidence collection, progress tracking, and diagnosis.</text>
+
+  <rect class="textbox" x="80" y="170" width="520" height="92" />
+  <text x="100" y="204" class="text">Selected context</text>
+  <text x="100" y="236" class="text">docker-desktop</text>
+  <text x="100" y="266" class="text">Namespace: default</text>
+
+  <rect class="textbox" x="80" y="290" width="520" height="180" />
+  <text x="100" y="326" class="text">Checking Pods</text>
+  <text x="100" y="356" class="text">Reading Logs</text>
+  <text x="100" y="386" class="text">Analyzing Events</text>
+  <text x="100" y="416" class="text">Inspecting Deployments</text>
+  <text x="100" y="446" class="text">AI Reasoning</text>
+
+  <rect x="640" y="170" width="280" height="92" rx="20" fill="#111827" stroke="#334155" stroke-width="2" />
+  <text x="660" y="204" class="text">Diagnosis</text>
+  <text x="660" y="236" class="text">Root cause: Pod crash loop</text>
+  <text x="660" y="266" class="text">Fix: Verify image pull secret</text>
+  <rect class="button" x="660" y="300" width="180" height="36" />
+  <text x="690" y="325" class="text">View details</text>
+</svg>

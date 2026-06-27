@@ -7,6 +7,8 @@
 
 A hands-on, portfolio-ready project for Kubernetes incident investigation using AI reasoning.
 
+![Preview screenshot](readme-preview.svg)
+
 ![Dashboard and architecture preview](docs/visual-demo.svg)
 
 ## What this project does
