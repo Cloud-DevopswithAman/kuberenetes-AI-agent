@@ -77,7 +77,26 @@ Frontend
 ## GitHub showcase note
 
 This repository is structured as a clean, documentation-first portfolio project suitable for showcasing DevOps, Kubernetes, and AI integration skills on GitHub.
+## Quick start
 
+1. Copy the example environment file:
+   ```bash
+   copy .env.example .env
+   ```
+2. Build and run the full stack:
+   ```bash
+   docker compose up --build
+   ```
+3. Open the app:
+   - Frontend: http://localhost:3000
+   - Backend health: http://localhost:8000/health
+
+## Project structure
+
+- backend/ — FastAPI service with health endpoint and placeholder investigation modules
+- frontend/ — Next.js app with a minimal homepage
+- docs/ — architecture and implementation documentation
+- prompts/ — project setup prompt and future task prompts
 ## Next step
 
 Once you share your GitHub repository link, I can prepare and push this repository content to it directly.
