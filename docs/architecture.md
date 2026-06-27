@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AI Kubernetes Troubleshooting Agent is an on-demand diagnostic system. It is designed to inspect a Kubernetes cluster, gather evidence, and present a human-readable diagnosis with suggested fixes.
+The AI Kubernetes Troubleshooting Agent is an on-demand diagnostic system for Kubernetes clusters. It discovers kubeconfig contexts, allows target cluster selection, gathers evidence, and presents a clear diagnosis with remediation guidance.
 
 ## Core components
 
@@ -11,20 +11,20 @@ The AI Kubernetes Troubleshooting Agent is an on-demand diagnostic system. It is
 The frontend is the entry point for the user experience.
 
 Responsibilities:
-- start a troubleshooting run
-- show investigation results
-- display evidence and remediation steps
-- allow users to review previous investigations
+- discover kubeconfig contexts from local environment
+- allow cluster context selection
+- start investigations and show progress
+- render diagnosis, logs, and history
 
 ### 2. FastAPI backend
 
 The FastAPI service acts as the orchestrator.
 
 Responsibilities:
-- receive investigation requests
-- coordinate the investigation workflow
-- call the Kubernetes inspection layer
-- call the LLM reasoning layer
+- receive investigation requests and selected kubeconfig context
+- call the Kubernetes inspection layer with the chosen context
+- coordinate evidence collection and progress tracking
+- call the AI reasoning layer
 - return a structured diagnosis response
 
 ### 3. Kubernetes investigation layer
@@ -32,61 +32,63 @@ Responsibilities:
 This layer performs read-only cluster inspection.
 
 Responsibilities:
-- read pod, deployment, service, ingress, and node state
-- inspect events and logs
-- assemble evidence into a compact investigation report
+- inspect pods, deployments, services, endpoints, and events
+- collect logs for problematic workloads
+- support both namespace-scoped and all-namespace investigations
+- report kubectl errors and hints
 
 ### 4. AI reasoning layer
 
 The AI layer interprets collected evidence and produces a structured diagnosis.
 
-Recommended model: Azure OpenAI GPT-4.1
+Responsibilities:
+- identify likely root causes from evidence
+- explain findings in human-readable terms
+- suggest remediation commands and next steps
+- score confidence for the diagnosis
+
+### 5. History and audit layer
+
+A lightweight history service stores investigation records in memory.
 
 Responsibilities:
-- identify likely root causes
-- explain evidence-based reasoning
-- propose remediation steps
-- provide confidence and follow-up checks
-
-### 5. Optional persistence layer
-
-A persistence layer can store investigation history.
-
-Possible options:
-- PostgreSQL for structured history
-- Redis for short-lived cache or task state
+- keep recent investigations visible in the dashboard
+- preserve selected context and namespace for auditability
+- support demo and early-stage troubleshooting workflows
 
 ## Request flow
 
 ```mermaid
 flowchart TD
-    A[User clicks Investigate Cluster] --> B[Frontend]
-    B --> C[FastAPI Backend]
-    C --> D[Kubernetes Investigation Layer]
-    D --> E[AI Reasoning Layer]
-    E --> F[Diagnosis + Suggested Fix]
-    F --> G[Frontend Diagnosis View]
+    A[User selects kubeconfig context] --> B[Frontend dashboard]
+    B --> C[GET /clusters]
+    B --> D[POST /investigate]
+    D --> E[Kubernetes investigation layer]
+    E --> F[AI reasoning layer]
+    F --> G[Diagnosis response]
+    G --> H[Dashboard result view]
+    H --> I[GET /history]
 ```
 
 ## Design principles
 
-- Read-only by default
-- Human-in-the-loop
-- Evidence-first reasoning
-- Clear and explainable outputs
-- RBAC-aware cluster access
+- Read-only investigation first
+- Cluster-aware context selection
+- Evidence-driven diagnosis
+- Explainable AI output
+- Minimal user friction
 
 ## Security considerations
 
 - Use least-privilege Kubernetes RBAC
-- Never expose secrets in investigation output
-- Limit log access to relevant namespaces where possible
-- Store API keys in environment variables or secret managers
+- Keep kubeconfig path and API keys out of source control
+- Do not expose secrets from cluster logs
+- Use environment variables for all sensitive values
 
 ## What this system does not do
 
-This design does not implement:
-- a Kubernetes controller
-- reconciliation loops
-- automatic patching or self-healing
-- cluster-wide mutation workflows
+This implementation is not a Kubernetes operator or mutating controller. It does not:
+- automatically update cluster state
+- perform write operations in the cluster
+- manage reconciliation or self-healing
+- store long-term production data yet

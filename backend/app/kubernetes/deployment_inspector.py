@@ -1,9 +1,12 @@
 from app.core.kubectl import KubectlExecutor
 
 
-def inspect_deployments(namespace: str | None = None) -> dict:
-    executor = KubectlExecutor(namespace=namespace)
-    result = executor.run(["get", "deployments", "-A"])
+def inspect_deployments(namespace: str | None = None, context: str | None = None) -> dict:
+    executor = KubectlExecutor(namespace=namespace, context=context)
+    command = ["get", "deployments"]
+    if namespace is None:
+        command.append("-A")
+    result = executor.run(command)
 
     if not result["success"]:
         return {"status": "error", "message": result["stderr"]}

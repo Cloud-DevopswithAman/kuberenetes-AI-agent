@@ -2,7 +2,7 @@
 
 ## Overview
 
-The backend exposes a small set of endpoints for starting investigations and checking service health.
+The backend exposes a compact set of endpoints for cluster investigation, progress tracking, and history.
 
 ## Endpoints
 
@@ -18,6 +18,20 @@ Response:
 }
 ```
 
+### List clusters
+
+GET /clusters
+
+Response:
+
+```json
+{
+  "clusters": ["minikube", "docker-desktop", "kind-kind"],
+  "current_context": "docker-desktop",
+  "kubeconfig": "C:\\Users\\User\\.kube\\config"
+}
+```
+
 ### Start investigation
 
 POST /investigate
@@ -27,8 +41,7 @@ Request body:
 ```json
 {
   "namespace": "default",
-  "resourceType": "deployment",
-  "resourceName": "my-app"
+  "context": "docker-desktop"
 }
 ```
 
@@ -36,22 +49,43 @@ Response:
 
 ```json
 {
-  "requestId": "uuid",
-  "status": "completed",
-  "summary": "Pod crash loops detected",
-  "rootCause": "Image pull failure caused by invalid registry credentials",
-  "evidence": [
-    "Pod is in CrashLoopBackOff",
-    "Recent events show ImagePullBackOff"
-  ],
-  "suggestedFix": [
-    "Verify image pull secret",
-    "Check registry credentials"
-  ],
-  "confidence": "high",
-  "nextSteps": [
-    "Inspect secret and image reference"
-  ]
+  "status": "success",
+  "investigation_id": "uuid",
+  "context": "docker-desktop",
+  "investigation": {
+    "progress_id": "uuid",
+    "pods": {"healthy": true, ...},
+    "logs": {"status": "collected", ...},
+    "events": {"status": "analyzed", ...},
+    "deployments": {"status": "inspected", ...},
+    "network": {"status": "inspected", ...}
+  },
+  "diagnosis": {
+    "root_cause": "Pod is failing due to ImagePullBackOff",
+    "explanation": "The pod cannot start because the image registry is unreachable.",
+    "fix": "Verify container image name and registry credentials.",
+    "kubectl_command": "kubectl describe pod <pod-name> -n default",
+    "confidence": 72
+  }
+}
+```
+
+### Progress polling
+
+GET /progress/{progress_id}
+
+Response:
+
+```json
+{
+  "progress": {
+    "steps": [
+      {"name": "Checking Pods", "status": "completed"},
+      {"name": "Reading Logs", "status": "completed"},
+      {"name": "AI Reasoning", "status": "running"}
+    ],
+    "completed": false
+  }
 }
 ```
 
@@ -63,12 +97,22 @@ Response:
 
 ```json
 {
-  "investigations": []
+  "history": [
+    {
+      "timestamp": "2026-06-27T12:34:56Z",
+      "user": "admin",
+      "namespace": "default",
+      "context": "docker-desktop",
+      "root_cause": "CrashLoopBackOff due to failed image pull",
+      "confidence": 72,
+      "status": "completed"
+    }
+  ]
 }
 ```
 
 ## Notes
 
-- The first version should be read-only.
-- All investigation requests should be logged for auditability.
-- Avoid returning secrets from cluster inspection output.
+- Investigation requests are read-only and cluster-aware.
+- Secrets and sensitive data should be omitted from outputs.
+- History records include selected kubeconfig context for auditability.

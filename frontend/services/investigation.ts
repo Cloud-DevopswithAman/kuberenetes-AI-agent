@@ -5,8 +5,13 @@ export type ProgressStep = {
   status: 'pending' | 'running' | 'completed';
 };
 
-export async function startInvestigation(token: string, namespace?: string) {
-  const response = await getApiClient(token).post('/investigate', { namespace });
+export async function startInvestigation(token: string, namespace?: string, context?: string) {
+  const response = await getApiClient(token).post('/investigate', { namespace, context });
+  return response.data;
+}
+
+export async function getClusters(token: string) {
+  const response = await getApiClient(token).get('/clusters');
   return response.data;
 }
 

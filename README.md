@@ -1,102 +1,99 @@
 # AI Kubernetes Troubleshooting Agent
 
-A documentation-first, portfolio-ready project for building an on-demand AI troubleshooting system for Kubernetes clusters.
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Python](https://img.shields.io/badge/python-3.11-blue.svg)
+![Docker](https://img.shields.io/badge/docker-ready-blue.svg)
+![CI](https://github.com/Cloud-DevopswithAman/kuberenetes-AI-agent/actions/workflows/ci.yml/badge.svg)
 
-## Project overview
+A hands-on, portfolio-ready project for Kubernetes incident investigation using AI reasoning.
 
-This project explores how to combine:
-- Kubernetes cluster inspection
-- incident evidence collection
-- LLM-based reasoning
-- clear diagnosis and remediation guidance
+![Dashboard and architecture preview](docs/visual-demo.svg)
 
-It is designed as an on-demand investigation workflow, not as a Kubernetes controller or operator.
+## What this project does
 
-## Why this project matters
+This system helps DevOps teams run on-demand cluster investigations by:
+- discovering kubeconfig contexts and selecting the target cluster
+- collecting pod, deployment, event, log, and networking evidence
+- synthesizing results with an AI reasoning layer
+- delivering a root cause diagnosis, suggested fix, and confidence score
+- storing history of past investigations for auditability
 
-Modern DevOps and SRE teams often need fast answers during incidents. This system aims to reduce time to diagnosis by combining cluster telemetry with AI reasoning in a structured workflow.
+## Why it matters
 
-## Core architecture
+Kubernetes incidents are often noisy and time-sensitive. This project is designed to reduce mean time to diagnosis by combining cluster evidence with AI-powered interpretation in a single workflow.
 
-Frontend
-  -> FastAPI backend (orchestrator)
-  -> Kubernetes investigation layer
-  -> AI reasoning layer
-  -> diagnosis and suggested fix
-  -> frontend diagnosis view
+## Key features
 
-## Recommended stack
+- kubeconfig context discovery for local cluster selection
+- read-only evidence collection from the selected cluster
+- progress tracking during investigation
+- AI diagnosis and remediation guidance
+- investigation history and cluster-aware context tracking
 
-- Frontend: React or a lightweight web UI
-- Backend: FastAPI
-- Kubernetes access: Python Kubernetes client
-- LLM: Azure OpenAI GPT-4.1
-- Storage: optional PostgreSQL or Redis for history and caching
-- Deployment: Docker and Kubernetes for later stages
+## Architecture at a glance
 
-## What the first version will do
+```mermaid
+flowchart TD
+  A[User selects cluster context] --> B[Frontend Dashboard]
+  B --> C[FastAPI backend]
+  C --> D[Kubernetes investigation layer]
+  D --> E[AI reasoning layer]
+  E --> F[Diagnosis + fix recommendation]
+  F --> B
+```
 
-- inspect pod health and restarts
-- inspect deployments and statefulsets
-- review recent Kubernetes events
-- collect logs from failing workloads
-- generate a structured incident diagnosis
-- recommend next steps and fixes
+## Current APIs
+
+- `GET /health` — service health check
+- `GET /clusters` — list kubeconfig contexts and current context
+- `POST /investigate` — start a cluster investigation with optional namespace/context
+- `GET /progress/{progress_id}` — poll investigation progress
+- `GET /history` — view past investigations
+
+## Quick start
+
+1. Copy the sample environment file:
+   ```powershell
+   copy .env.example .env
+   ```
+2. Edit `.env` with your OpenRouter API key and kubeconfig path:
+   ```env
+   OPENROUTER_API_KEY=YOUR_API_KEY
+   OPENROUTER_MODEL=gpt-4o-mini
+   KUBECONFIG_PATH=C:\Users\YourUser\.kube\config
+   NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+   ```
+3. Build and start the stack:
+   ```powershell
+   docker compose up --build
+   ```
+4. Open the app in your browser:
+   - Frontend: `http://localhost:3000`
+   - Backend health: `http://localhost:8000/health`
+
+Optional: if you want the backend container to access your host kubeconfig for live cluster investigations, create a small override file and run with it.
+
+1. Set `KUBECONFIG_PATH` in your `.env` to the path of your kubeconfig, e.g. `C:\Users\You\.kube\config`.
+2. Run with the helper compose file to mount the kubeconfig into the backend container:
+   ```powershell
+   docker compose -f docker-compose.yml -f docker-compose.kubeconfig.yml up --build
+   ```
+
+## Usage
+
+- Select the kubeconfig context to investigate.
+- Optionally choose a namespace or leave it blank to scan all namespaces.
+- Click `Investigate Cluster` to begin.
+- Watch progress, then review the diagnosis and suggested fix.
+- Review past investigations in the history table.
 
 ## Repository structure
 
-- [docs/architecture.md](docs/architecture.md) — system design and component responsibilities
-- [docs/implementation-plan.md](docs/implementation-plan.md) — phased implementation roadmap
-- [docs/api-spec.md](docs/api-spec.md) — backend API contract
+- `backend/` — FastAPI backend, Kubernetes probe orchestration, AI reasoning, auth/history
+- `frontend/` — Next.js dashboard with cluster selection and investigation UI
+- `docs/` — architecture and API documentation
+- `prompts/` — project setup and workflow prompts
 
-## End-to-end flow
+## Notes for GitHub readers
 
-1. User clicks Investigate Cluster.
-2. The frontend sends a request to the backend.
-3. The backend collects cluster evidence.
-4. The investigation layer summarizes the incident context.
-5. The AI layer produces a diagnosis and remediation plan.
-6. The result is shown to the user.
-
-## Safety and design principles
-
-- read-only investigation first
-- human approval before any write actions
-- RBAC-based cluster access
-- secret redaction in logs
-- audit-friendly request logging
-
-## Development roadmap
-
-- Phase 1: backend skeleton and health endpoint
-- Phase 2: Kubernetes evidence collection
-- Phase 3: AI reasoning integration
-- Phase 4: frontend diagnosis experience
-- Phase 5: production hardening and history tracking
-
-## GitHub showcase note
-
-This repository is structured as a clean, documentation-first portfolio project suitable for showcasing DevOps, Kubernetes, and AI integration skills on GitHub.
-## Quick start
-
-1. Copy the example environment file:
-   ```bash
-   copy .env.example .env
-   ```
-2. Build and run the full stack:
-   ```bash
-   docker compose up --build
-   ```
-3. Open the app:
-   - Frontend: http://localhost:3000
-   - Backend health: http://localhost:8000/health
-
-## Project structure
-
-- backend/ — FastAPI service with health endpoint and placeholder investigation modules
-- frontend/ — Next.js app with a minimal homepage
-- docs/ — architecture and implementation documentation
-- prompts/ — project setup prompt and future task prompts
-## Next step
-
-Once you share your GitHub repository link, I can prepare and push this repository content to it directly.
+This repo is focused on an AI-assisted Kubernetes troubleshooting workflow, not cluster mutation. It is ideal for demonstrating full-stack engineering across Kubernetes, Python, React, and LLM integration.

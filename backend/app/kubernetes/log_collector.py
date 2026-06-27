@@ -1,8 +1,8 @@
 from app.core.kubectl import KubectlExecutor
 
 
-def collect_logs(namespace: str | None = None, pod_name: str | None = None) -> dict:
-    executor = KubectlExecutor(namespace=namespace)
+def collect_logs(namespace: str | None = None, pod_name: str | None = None, context: str | None = None) -> dict:
+    executor = KubectlExecutor(namespace=namespace, context=context)
     if not pod_name:
         return {"status": "skipped", "message": "No pod name provided"}
 

@@ -10,6 +10,7 @@ export function getApiClient(token?: string): AxiosInstance {
 
   return axios.create({
     baseURL: BASE_URL,
+    timeout: 20000,
     headers,
   });
 }

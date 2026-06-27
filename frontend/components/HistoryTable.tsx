@@ -2,6 +2,7 @@ type HistoryRecord = {
   timestamp: string;
   root_cause: string;
   namespace: string;
+  context?: string;
   confidence: number;
   status: string;
 };
@@ -28,6 +29,7 @@ export function HistoryTable({ history }: Props) {
             <th className="py-2">Timestamp</th>
             <th className="py-2">Root Cause</th>
             <th className="py-2">Namespace</th>
+            <th className="py-2">Context</th>
             <th className="py-2">Confidence</th>
             <th className="py-2">Status</th>
           </tr>
@@ -38,6 +40,7 @@ export function HistoryTable({ history }: Props) {
               <td className="py-3 text-slate-300">{item.timestamp}</td>
               <td className="py-3 text-slate-300">{item.root_cause}</td>
               <td className="py-3 text-slate-300">{item.namespace}</td>
+              <td className="py-3 text-slate-300">{item.context ?? 'current'}</td>
               <td className="py-3 text-slate-300">{item.confidence}%</td>
               <td className="py-3 text-slate-300">{item.status}</td>
             </tr>

@@ -1,12 +1,15 @@
 from app.core.kubectl import KubectlExecutor
 
 
-def inspect_pods(namespace: str | None = None) -> dict:
-    executor = KubectlExecutor(namespace=namespace)
-    result = executor.run(["get", "pods", "-A"])
+def inspect_pods(namespace: str | None = None, context: str | None = None) -> dict:
+    executor = KubectlExecutor(namespace=namespace, context=context)
+    command = ["get", "pods"]
+    if namespace is None:
+        command.append("-A")
+    result = executor.run(command)
 
     if not result["success"]:
-        return {"healthy": False, "problematic_pods": [], "error": result["stderr"]}
+        return {"healthy": False, "problematic_pods": [], "error": result["stderr"], "hint": result.get("hint", "")}
 
     lines = [line for line in result["stdout"].splitlines() if line.strip()]
     problematic = []

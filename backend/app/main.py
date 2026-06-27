@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 from app.api.health import router as health_router
 from app.api.routes.auth import router as auth_router
+from app.api.routes.clusters import router as clusters_router
 from app.api.routes.history import router as history_router
 from app.api.routes.investigate import router as investigate_router
 from app.api.routes.progress import router as progress_router
@@ -22,6 +23,7 @@ app.add_middleware(
 
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(clusters_router)
 app.include_router(history_router)
 app.include_router(progress_router)
 app.include_router(investigate_router)

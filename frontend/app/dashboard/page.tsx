@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth';
-import { startInvestigation, getHistory, getProgress, ProgressStep } from '../../services/investigation';
+import { startInvestigation, getHistory, getProgress, getClusters, ProgressStep } from '../../services/investigation';
 import { DiagnosisCard } from '../../components/DiagnosisCard';
 import { HistoryTable } from '../../components/HistoryTable';
 import { ProgressList } from '../../components/ProgressList';
@@ -24,6 +24,8 @@ export default function DashboardPage() {
   const [investigationState, setInvestigationState] = useState<any>(null);
   const [steps, setSteps] = useState<ProgressStep[]>(initialSteps);
   const [history, setHistory] = useState<any[]>([]);
+  const [clusters, setClusters] = useState<string[]>([]);
+  const [selectedContext, setSelectedContext] = useState('');
   const [statusMessage, setStatusMessage] = useState('Ready');
   const [running, setRunning] = useState(false);
   const [error, setError] = useState('');
@@ -48,7 +50,18 @@ export default function DashboardPage() {
       }
     }
 
+    async function loadClusters() {
+      try {
+        const response = await getClusters(token);
+        setClusters(response.clusters ?? []);
+        setSelectedContext(response.current_context ?? '');
+      } catch {
+        setClusters([]);
+      }
+    }
+
     loadHistory();
+    loadClusters();
   }, [token]);
 
   async function fetchProgress(progressId: string) {
@@ -82,9 +95,9 @@ export default function DashboardPage() {
     setInvestigationState(null);
 
     try {
-      const response = await startInvestigation(token, 'default');
+      const response = await startInvestigation(token, undefined, selectedContext || undefined);
       setInvestigationState(response);
-      setStatusMessage('Investigation complete. Fetching diagnosis...');
+      setStatusMessage(`Investigating cluster ${selectedContext || 'current context'}...`);
 
       if (response.investigation_id) {
         await fetchProgress(response.investigation_id);
@@ -97,6 +110,7 @@ export default function DashboardPage() {
         }, 12000);
       }
     } catch (err) {
+      console.error(err);
       setError('Investigation failed. Please try again.');
       setStatusMessage('Error during investigation.');
     } finally {
@@ -140,6 +154,32 @@ export default function DashboardPage() {
               <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Status</p>
               <p className="mt-3 text-2xl font-semibold text-white">{statusMessage}</p>
               {error ? <p className="mt-3 text-sm text-rose-400">{error}</p> : null}
+            </div>
+
+            <div className="rounded-3xl border border-slate-800 bg-slate-900/90 p-6">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Cluster Context</p>
+                  <p className="mt-2 text-sm text-slate-300">Choose a kubeconfig context for the investigation.</p>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm text-slate-200">Select context</label>
+                <select
+                  value={selectedContext}
+                  onChange={(event) => setSelectedContext(event.target.value)}
+                  className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-400"
+                >
+                  <option value="">Use current context</option>
+                  {clusters.map((cluster) => (
+                    <option key={cluster} value={cluster}>{cluster}</option>
+                  ))}
+                </select>
+                {clusters.length === 0 ? (
+                  <p className="mt-3 text-sm text-rose-400">No kubeconfig contexts found. Ensure kubectl is configured.</p>
+                ) : null}
+              </div>
             </div>
 
             <ProgressList steps={steps} />

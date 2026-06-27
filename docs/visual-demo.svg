@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <style>
+    .bg { fill: #0f172a; }
+    .card { fill: #111827; stroke: #334155; stroke-width: 3; rx: 24; }
+    .title { fill: #e2e8f0; font-family: Inter, Arial, sans-serif; font-size: 28px; font-weight: 700; }
+    .label { fill: #94a3b8; font-family: Inter, Arial, sans-serif; font-size: 16px; }
+    .text { fill: #cbd5e1; font-family: Inter, Arial, sans-serif; font-size: 14px; }
+    .badge { fill: #0284c7; stroke: #0e7490; stroke-width: 1; rx: 10; }
+    .badge-text { fill: #f8fafc; font-family: Inter, Arial, sans-serif; font-size: 12px; font-weight: 700; }
+    .line { stroke: #64748b; stroke-width: 2; marker-end: url(#arrow); }
+  </style>
+  <rect class="bg" width="1200" height="720" />
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+    </marker>
+  </defs>
+
+  <text x="70" y="60" class="title">AI Kubernetes Troubleshooting Agent</text>
+  <text x="70" y="90" class="label">Cluster-aware investigation with context selection, progress, and diagnosis.</text>
+
+  <rect class="card" x="70" y="120" width="520" height="520" />
+  <text x="100" y="165" class="title">Dashboard overview</text>
+  <rect x="100" y="190" width="440" height="110" rx="18" fill="#0f172a" stroke="#334155" stroke-width="2" />
+  <text x="120" y="220" class="label">Selected context</text>
+  <rect x="120" y="235" width="220" height="36" rx="12" fill="#1e293b" />
+  <text x="135" y="258" class="text">docker-desktop</text>
+  <text x="120" y="295" class="label">Status</text>
+  <rect x="120" y="310" width="320" height="34" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1" />
+  <text x="135" y="332" class="text">Investigating cluster health...</text>
+
+  <rect x="100" y="360" width="440" height="240" rx="18" fill="#0f172a" stroke="#334155" stroke-width="2" />
+  <text x="120" y="395" class="label">Investigation progress</text>
+  <rect x="120" y="420" width="320" height="28" rx="14" fill="#1e293b" />
+  <rect x="120" y="420" width="180" height="28" rx="14" fill="#0ea5e9" />
+  <text x="130" y="440" class="text">Checking Pods · Reading Logs · AI Reasoning</text>
+  <rect x="120" y="460" width="320" height="28" rx="14" fill="#1e293b" />
+  <text x="130" y="480" class="text">Recent history loaded</text>
+  <rect x="120" y="500" width="320" height="28" rx="14" fill="#1e293b" />
+  <text x="130" y="520" class="text">Diagnosis ready with confidence score</text>
+
+  <rect class="card" x="620" y="120" width="500" height="520" />
+  <text x="650" y="165" class="title">Architecture flow</text>
+  <rect x="650" y="190" width="420" height="80" rx="18" fill="#0f172a" stroke="#334155" stroke-width="2" />
+  <text x="670" y="225" class="text">Frontend dashboard</text>
+  <text x="670" y="245" class="label">/clusters, /investigate, /progress</text>
+
+  <rect x="725" y="290" width="270" height="80" rx="18" fill="#0f172a" stroke="#334155" stroke-width="2" />
+  <text x="745" y="325" class="text">FastAPI backend</text>
+  <text x="745" y="345" class="label">auth, progress, history, cluster orchestration</text>
+
+  <rect x="650" y="400" width="420" height="80" rx="18" fill="#0f172a" stroke="#334155" stroke-width="2" />
+  <text x="670" y="435" class="text">Kubernetes investigation</text>
+  <text x="670" y="455" class="label">kubectl probes, pod/events/log analysis</text>
+
+  <rect x="710" y="510" width="310" height="80" rx="18" fill="#0f172a" stroke="#334155" stroke-width="2" />
+  <text x="730" y="545" class="text">AI reasoning</text>
+  <text x="730" y="565" class="label">LLM diagnosis, root cause, fixes, confidence</text>
+
+  <path class="line" d="M 850 270 L 850 290" />
+  <path class="line" d="M 850 370 L 850 390" />
+  <path class="line" d="M 850 470 L 850 510" />
+
+  <rect x="710" y="620" width="310" height="50" rx="16" fill="#022f49" stroke="#0e7490" stroke-width="2" />
+  <text x="760" y="652" class="badge-text">Context-aware cluster selection</text>
+</svg>
